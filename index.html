@@ -345,7 +345,7 @@
                 </div>
                 <!-- WHATSAPP BUTTON BELOW IMAGE -->
                 <div class="text-center mt-4">
-                    <a href="https://wa.me/919693291871?text=मैं%20इंटरेस्टेड%20हूं" target="_blank" class="wa-btn shine-effect glow-pulse" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
+                    <a href="https://wa.me/919693291871?text=मैं%20इंटरेस्टेड%20हूं" target="_blank" class="wa-btn track-contact shine-effect glow-pulse" style="font-size: 1.1rem; padding: 1rem 2.5rem;">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                         व्हाट्सएप पर चैट करें
                     </a>
@@ -371,7 +371,7 @@
                     <p class="fs-5 d-flex align-items-center gap-2">🌱 टिकाऊ विकास</p>
                 </div>
 
-                <a href="https://wa.me/919693291871?text=मैं%20इंटरेस्टेड%20हूं" target="_blank" class="wa-btn mb-4 shine-effect">
+                <a href="https://wa.me/919693291871?text=मैं%20इंटरेस्टेड%20हूं" target="_blank" class="wa-btn track-contact mb-4 shine-effect">
                     📲 व्हाट्सएप पर जुड़ें
                 </a>
                 
@@ -436,7 +436,7 @@
             </div>
         </div>
         <div class="text-center mt-5">
-            <button onclick="openForm()" class="wa-btn shine-effect">📲 अभी शुरू करें</button>
+            <button onclick="openForm(); trackContactEvent();" class="wa-btn shine-effect">📲 अभी शुरू करें</button>
         </div>
     </div>
 </section>
@@ -513,7 +513,7 @@
                 <div class="col-md-4"><div class="glow-border text-dark p-3 rounded" style="background:var(--lightest);"><strong>💼 काम:</strong> आप क्या करते हैं</div></div>
             </div>
             <p class="fs-6 fw-semibold mb-3" style="color:var(--primary);">📌 मेरा नंबर सेव करें: +91 96932 91871</p>
-            <button onclick="openForm()" class="wa-btn glow-pulse" style="background:var(--primary);color:var(--white);border:1px solid var(--primary); justify-content: center;">
+            <button onclick="openForm(); trackContactEvent();" class="wa-btn glow-pulse" style="background:var(--primary);color:var(--white);border:1px solid var(--primary); justify-content: center;">
                 📲 अभी व्हाट्सएप पर मैसेज करें
             </button>
         </div>
@@ -557,6 +557,13 @@
     },{threshold:0.3});
     counters.forEach(c=>counterObserver.observe(c));
 
+    /* ===== CONTACT TRACKING FUNCTION ===== */
+    function trackContactEvent() {
+        if (typeof fbq !== 'undefined') {
+            fbq('track', 'Contact');
+        }
+    }
+
     /* ===== FORM FUNCTIONS ===== */
     const formBackdrop = document.getElementById('formBackdrop');
     const formContainer = document.getElementById('formContainer');
@@ -577,6 +584,13 @@
     }
 
     formBackdrop.addEventListener('click', closeForm);
+
+    // Track clicks on WhatsApp buttons with track-contact class
+    document.querySelectorAll('.track-contact').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            trackContactEvent();
+        });
+    });
 
     // Form submission
     leadForm.addEventListener('submit', function(e) {
@@ -599,6 +613,9 @@
         submitBtn.innerHTML = '⏳ भेजा जा रहा है...';
         submitBtn.disabled = true;
 
+        // Track Contact event on form submit
+        trackContactEvent();
+
         // Send to Google Sheets
         fetch(GOOGLE_SCRIPT_URL, {
             method: 'POST',
@@ -612,11 +629,6 @@
             // Show success message
             leadForm.style.display = 'none';
             formSuccess.classList.remove('d-none');
-            
-            // Track conversion - सिर्फ Contact event (Lead हटा दिया)
-            if (typeof fbq !== 'undefined') {
-                fbq('track', 'Contact');
-            }
             
             // Redirect to WhatsApp after 2 seconds
             setTimeout(() => {
