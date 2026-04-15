@@ -613,9 +613,9 @@
             leadForm.style.display = 'none';
             formSuccess.classList.remove('d-none');
             
-            // Track conversion
+            // Track conversion - सिर्फ Contact event (Lead हटा दिया)
             if (typeof fbq !== 'undefined') {
-                fbq('track', 'Lead');
+                fbq('track', 'Contact');
             }
             
             // Redirect to WhatsApp after 2 seconds
